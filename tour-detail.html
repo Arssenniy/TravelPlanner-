@@ -119,6 +119,11 @@
         .map-container { margin-top: 30px; border-radius: 20px; overflow: hidden; height: 400px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         #routeMap { width: 100%; height: 100%; }
 
+        /* Авиабилеты (новый блок) */
+        .avia-section { background: white; border-radius: 30px; padding: 30px; margin: 40px 0; box-shadow: 0 10px 30px rgba(0,53,128,0.08); }
+        .avia-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .avia-card { background: #f8fafd; border-radius: 15px; padding: 15px; text-align: center; }
+
         .similar-tours { margin-top: 50px; }
         .similar-tours h2 { color: #003580; font-size: 24px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
         .similar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -175,7 +180,7 @@
 
 <div class="detail-container" id="detailContainer"></div>
 
-<!-- Блок планировщика + карта -->
+<!-- Блок планировщика + карта (с изменённым порядком: карта теперь выше) -->
 <div class="detail-container">
     <div class="planner-section" id="plannerSection">
         <div class="planner-header">
@@ -193,15 +198,51 @@
         <div class="days-tabs" id="daysTabs"></div>
         <div id="daysPlansContainer"></div>
 
+        <!-- КАРТА ПЕРЕМЕЩЕНА СЮДА (выше формы добавления) -->
+        <div class="map-container">
+            <div id="routeMap"></div>
+        </div>
+
         <div class="add-place-form">
             <select id="newPlaceSelect"></select>
             <button id="addPlaceBtn"><i class="fas fa-plus"></i> Добавить в день</button>
         </div>
+    </div>
+</div>
 
-        <!-- Контейнер для карты -->
-        <div class="map-container">
-            <div id="routeMap"></div>
+<!-- НОВЫЙ БЛОК: Примерные цены на авиабилеты -->
+<div class="detail-container">
+    <div class="avia-section">
+        <h2 style="color: #003580; font-size: 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-plane"></i> Примерные цены на авиабилеты (туда-обратно, эконом)
+        </h2>
+        <div class="avia-grid">
+            <div class="avia-card">
+                <i class="fas fa-map-marker-alt" style="color: #003580; font-size: 24px;"></i>
+                <h3 style="font-size: 16px; margin: 10px 0;">Москва — Санкт-Петербург</h3>
+                <p style="font-size: 20px; font-weight: 700; color: #003580;">от 5 500 ₽</p>
+                <small style="color: #5e6f7d;">в одну сторону</small>
+            </div>
+            <div class="avia-card">
+                <i class="fas fa-map-marker-alt" style="color: #003580; font-size: 24px;"></i>
+                <h3 style="font-size: 16px; margin: 10px 0;">Москва — Сочи</h3>
+                <p style="font-size: 20px; font-weight: 700; color: #003580;">от 4 800 ₽</p>
+                <small style="color: #5e6f7d;">в одну сторону</small>
+            </div>
+            <div class="avia-card">
+                <i class="fas fa-map-marker-alt" style="color: #003580; font-size: 24px;"></i>
+                <h3 style="font-size: 16px; margin: 10px 0;">Москва — Калининград</h3>
+                <p style="font-size: 20px; font-weight: 700; color: #003580;">от 7 900 ₽</p>
+                <small style="color: #5e6f7d;">в одну сторону</small>
+            </div>
+            <div class="avia-card">
+                <i class="fas fa-map-marker-alt" style="color: #003580; font-size: 24px;"></i>
+                <h3 style="font-size: 16px; margin: 10px 0;">Москва — Екатеринбург</h3>
+                <p style="font-size: 20px; font-weight: 700; color: #003580;">от 6 200 ₽</p>
+                <small style="color: #5e6f7d;">в одну сторону</small>
+            </div>
         </div>
+        <p style="text-align: right; color: #5e6f7d; font-size: 12px; margin-top: 15px;">* Цены ориентировочные, могут меняться в зависимости от сезона и дат.</p>
     </div>
 </div>
 
@@ -497,6 +538,112 @@
         'Каменный мост': [54.515, 36.253]
     };
 
+    // ==================== РАСШИРЕННЫЕ ДАННЫЕ ПО ТУРАМ (ИНДИВИДУАЛЬНАЯ ПРОГРАММА И ОТЕЛЬ) ====================
+    const tourExtendedData = {
+        1: { // Москва: Кремль и Красная площадь
+            program: [
+                'День 1: Заезд, размещение в отеле. Вечерняя прогулка по Красной площади и Александровскому саду.',
+                'День 2: Экскурсия в Московский Кремль (соборы, Царь-пушка, Царь-колокол). Свободное время в центре.',
+                'День 3: Посещение собора Василия Блаженного и прогулка по парку Зарядье. Трансфер на вокзал/в аэропорт.'
+            ],
+            hotelName: 'Гранд Отель Москва',
+            hotelDescription: 'Роскошный отель в историческом центре, в 5 минутах ходьбы от Красной площади. Номера с видом на Кремль, ресторан русской кухни, спа-центр.',
+            hotelFeatures: [
+                { icon: 'fas fa-spa', title: 'Спа-центр', desc: 'Хаммам, сауна, массаж' },
+                { icon: 'fas fa-swimmer', title: 'Бассейн', desc: 'Крытый бассейн' }
+            ]
+        },
+        6: { // Санкт-Петербург: Эрмитаж и Дворцовая площадь
+            program: [
+                'День 1: Прибытие в Санкт-Петербург, трансфер в отель. Обзорная экскурсия по Невскому проспекту.',
+                'День 2: Экскурсия в Эрмитаж (главный музейный комплекс). Прогулка по Дворцовой площади.',
+                'День 3: Посещение Петропавловской крепости и собора. Свободное время. Отъезд.'
+            ],
+            hotelName: 'Отель "Астория"',
+            hotelDescription: 'Легендарный отель на Исаакиевской площади, в шаговой доступности от Эрмитажа. Ресторан, спа-центр, номера в классическом стиле.',
+            hotelFeatures: [
+                { icon: 'fas fa-spa', title: 'Спа', desc: 'Турецкая баня, массаж' },
+                { icon: 'fas fa-utensils', title: 'Ресторан', desc: 'Завтрак "шведский стол"' }
+            ]
+        },
+        14: { // Калининград: Кафедральный собор и остров Канта
+            program: [
+                'День 1: Заезд, размещение. Вечерняя прогулка по острову Канта, вид на Кафедральный собор.',
+                'День 2: Экскурсия в Кафедральный собор, музей Канта. Прогулка по Рыбной деревне.',
+                'День 3: Посещение Музея янтаря и фортов. Трансфер.'
+            ],
+            hotelName: 'Отель "Кёнигсберг"',
+            hotelDescription: 'Уютный отель в центре Калининграда, недалеко от музея янтаря. Номера с современным дизайном, бесплатный Wi-Fi.',
+            hotelFeatures: [
+                { icon: 'fas fa-parking', title: 'Парковка', desc: 'Бесплатно' },
+                { icon: 'fas fa-wifi', title: 'Wi-Fi', desc: 'На всей территории' }
+            ]
+        },
+        18: { // Сочи: Красная Поляна
+            program: [
+                'День 1: Прибытие в Адлер, трансфер в отель Красной Поляны. Отдых.',
+                'День 2: Подъем на канатной дороге на хребет Псехако, панорамные виды.',
+                'День 3: Экскурсия к водопадам, посещение этно-парка. Свободное время.',
+                'День 4: Трансфер в аэропорт.'
+            ],
+            hotelName: 'Отель "Горный воздух"',
+            hotelDescription: 'Отель прямо у подножия склонов Красной Поляны. Номера с видом на горы, спа-центр с подогреваемым бассейном.',
+            hotelFeatures: [
+                { icon: 'fas fa-skiing', title: 'Горнолыжка', desc: 'Прямой доступ' },
+                { icon: 'fas fa-hot-tub', title: 'Джакузи', desc: 'С видом на горы' }
+            ]
+        },
+        22: { // Байкал: остров Ольхон
+            program: [
+                'День 1: Встреча в Иркутске, трансфер на Ольхон. Размещение на турбазе.',
+                'День 2: Экскурсия на мыс Хобой и скалу Шаманка.',
+                'День 3: Поездка на мыс Любви и к озеру Ханхой. Свободное время.',
+                'День 4: Возвращение в Иркутск.'
+            ],
+            hotelName: 'Ольхон Lodge',
+            hotelDescription: 'Эко-отель на берегу Байкала. Уютные домики с панорамными окнами, баня, прокат велосипедов.',
+            hotelFeatures: [
+                { icon: 'fas fa-fire', title: 'Камин', desc: 'В каждом номере' },
+                { icon: 'fas fa-bath', title: 'Баня', desc: 'Русская баня на дровах' }
+            ]
+        }
+    };
+
+    // Функция получения программы тура
+    function getTourProgram(tourId) {
+        if (tourExtendedData[tourId] && tourExtendedData[tourId].program) {
+            return tourExtendedData[tourId].program;
+        }
+        // Генерация программы по умолчанию на основе города
+        const city = tours.find(t => t.id === tourId).city;
+        const attractions = citiesAttractions[city] || ['достопримечательности города'];
+        return [
+            `День 1: Заезд, размещение. Обзорная экскурсия по городу, знакомство с центром.`,
+            `День 2: Посещение главных достопримечательностей: ${attractions.slice(0, 3).join(', ')}.`,
+            `День 3: Свободный день для самостоятельных прогулок или дополнительных экскурсий.`,
+            `День 4: Трансфер, отъезд.`
+        ];
+    }
+
+    // Функция получения данных об отеле
+    function getHotelInfo(tourId, tourName, city) {
+        const extended = tourExtendedData[tourId];
+        if (extended) {
+            return {
+                name: extended.hotelName || tourName,
+                description: extended.hotelDescription || `Отель в центре города ${city}. Комфортабельные номера, удобное расположение.`,
+                features: extended.hotelFeatures || []
+            };
+        }
+        // Стандартные данные из getHotelDetails (используем часть)
+        const details = getHotelDetails(tours.find(t => t.id === tourId));
+        return {
+            name: tourName,
+            description: details.fullDescription.split('. ')[0] + '.', // первое предложение
+            features: details.features.slice(0, 4) // первые 4 удобства
+        };
+    }
+
     // Функция получения координат места по названию и городу
     function getPlaceCoords(name, city, type = 'attraction') {
         if (type === 'attraction' && attractionsCoords[name]) {
@@ -593,6 +740,10 @@
     const details = getHotelDetails(currentTour);
     const reviews = generateHotelReviews(currentTour.name);
 
+    // Получаем индивидуальные данные для тура
+    const tourProgram = getTourProgram(currentTour.id);
+    const hotelInfo = getHotelInfo(currentTour.id, currentTour.name, currentTour.city);
+
     // Рендер основной страницы
     function renderDetailPage() {
         const container = document.getElementById('detailContainer');
@@ -609,7 +760,11 @@
             </div>
         `).join('');
 
-        const featuresHtml = details.features.map(f => `
+        const programHtml = tourProgram.map(day => `<p style="margin-bottom: 15px;"><strong>${day.split(':')[0]}:</strong> ${day.split(':')[1] || day}</p>`).join('');
+
+        // Формируем список удобств отеля (из индивидуальных + базовые)
+        const allFeatures = [...hotelInfo.features, ...details.features.slice(hotelInfo.features.length)]; // объединяем, избегая дублирования
+        const featuresHtml = allFeatures.slice(0, 6).map(f => `
             <div class="feature-item"><i class="${f.icon}"></i><div class="feature-text"><h4>${f.title}</h4><p>${f.desc}</p></div></div>
         `).join('');
 
@@ -633,13 +788,26 @@
             </div>
             <div class="hotel-content">
                 <div class="hotel-description">
-                    <h2><i class="fas fa-info-circle"></i> О туре</h2><p>${details.fullDescription}</p>
-                    <h2 style="margin-top: 30px;"><i class="fas fa-concierge-bell"></i> Услуги и удобства</h2><div class="features-grid">${featuresHtml}</div>
-                    <h2 style="margin-top: 30px;"><i class="fas fa-door-open"></i> Доступные номера</h2>
-                    <ul style="list-style: none;">${details.rooms.map(room => `<li style="padding: 10px 0; border-bottom: 1px solid #eef2f7;"><i class="fas fa-bed" style="color: #003580; margin-right: 10px;"></i>${room}</li>`).join('')}</ul>
+                    <h2><i class="fas fa-calendar-alt"></i> Программа тура</h2>
+                    ${programHtml}
+                    <div style="background: #f0f4fa; border-radius: 15px; padding: 20px; margin-top: 20px;">
+                        <p><i class="fas fa-check-circle" style="color: #003580;"></i> <strong>Включено:</strong> проживание, завтраки, трансфер, экскурсии по программе.</p>
+                        <p><i class="fas fa-times-circle" style="color: #cc3300;"></i> <strong>Не включено:</strong> авиабилеты, обеды и ужины (кроме указанных), личные расходы.</p>
+                    </div>
                 </div>
                 <div>
                     <div class="booking-card">
+                        <h2 style="color: #003580; font-size: 22px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-hotel"></i> Отель: ${hotelInfo.name}
+                        </h2>
+                        <p style="margin-bottom: 15px;">${hotelInfo.description}</p>
+                        <div class="features-grid" style="margin: 20px 0;">${featuresHtml}</div>
+                        <div style="margin: 20px 0;">
+                            <h3 style="font-size: 18px; color: #003580; margin-bottom: 10px;">Доступные номера</h3>
+                            <ul style="list-style: none;">
+                                ${details.rooms.map(room => `<li style="padding: 5px 0;"><i class="fas fa-bed" style="color: #003580; margin-right: 10px;"></i>${room}</li>`).join('')}
+                            </ul>
+                        </div>
                         <div class="booking-price"><span class="price">${currentTour.price.toLocaleString()} ₽</span><span class="period">/ за 3 ночи</span><div class="old-price">${Math.round(currentTour.price * 1.2).toLocaleString()} ₽</div></div>
                         <div class="booking-form">
                             <div class="booking-field"><i class="fas fa-calendar-alt"></i><input type="text" value="12 июн — 20 июн" readonly></div>
