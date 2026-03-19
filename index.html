@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelPlanner — планировщик путешествий по России</title>
+    <!-- Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #1a2b3c;
+        }
+
+        /* Верхняя шапка */
+        .top-header {
+            background-color: #003580;
+            color: white;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        .top-header .contacts {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .top-header .contacts a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .top-header .contacts a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .top-header .reviews-link a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #ffb700;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Основная шапка */
+        .main-header {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 20px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #003580;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo span {
+            background-color: #ffb700;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: #003580;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .city-count {
+            background: #eef2f7;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: #003580;
+        }
+
+        /* Форма поиска */
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            background-color: #f0f3f8;
+            padding: 20px;
+            border-radius: 50px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-field {
+            flex: 1 1 160px;
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 40px;
+            padding: 8px 18px;
+            box-shadow: 0 2px 8px rgba(0,53,128,0.1);
+            cursor: pointer;
+        }
+
+        .search-field i {
+            color: #003580;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .search-field input, .search-field select {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .search-field input {
+            cursor: pointer;
+        }
+
+        .search-btn {
+            background-color: #ffb700;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 35px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #003580;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 16px rgba(255,183,0,0.3);
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background-color: #ffa500;
+            transform: scale(1.02);
+        }
+
+        /* Календарь */
+        .calendar-container {
+            position: relative;
+            flex: 1 1 160px;
+        }
+
+        .calendar-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            padding: 24px;
+            z-index: 1000;
+            display: none;
+            width: 700px;
+        }
+
+        .calendar-dropdown.active {
+            display: block;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .calendar-header button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #003580;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .calendar-header button:hover {
+            background: #f0f3f8;
+        }
+
+        .calendar-month-year {
+            font-size: 18px;
+            font-weight: 600;
+            color: #003580;
+        }
+
+        .calendars-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .calendar-month {
+            width: 100%;
+        }
+
+        .calendar-month table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar-month th {
+            color: #5e6f7d;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .calendar-month td {
+            text-align: center;
+            padding: 4px 0;
+        }
+
+        .calendar-day {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 0 auto;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: #1a2b3c;
+        }
+
+        .calendar-day:hover {
+            background: #f0f3f8;
+        }
+
+        .calendar-day.selected {
+            background: #003580;
+            color: white;
+        }
+
+        .calendar-day.in-range {
+            background: #e6ecf7;
+            color: #003580;
+        }
+
+        .calendar-day.other-month {
+            color: #b0c0d0;
+        }
+
+        .calendar-day.today {
+            border: 2px solid #ffb700;
+        }
+
+        .calendar-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eef2f7;
+        }
+
+        .selected-dates {
+            color: #003580;
+            font-weight: 500;
+        }
+
+        .apply-btn {
+            background: #003580;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .apply-btn:hover {
+            background: #002b66;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #5e6f7d;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
+            margin-right: 15px;
+        }
+
+        .clear-btn:hover {
+            color: #003580;
+        }
+
+        /* Основной контент */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 5%;
+        }
+
+        /* Результаты */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-title {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tour-count {
+            background: #003580;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 16px;
+        }
+
+        .tour-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .tour-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,53,128,0.08);
+            transition: transform 0.2s;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tour-img {
+            height: 180px;
+            background: linear-gradient(135deg, #003580, #1e4d8c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            position: relative;
+        }
+
+        .tour-rating-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffb700;
+            color: #003580;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+
+        .tour-info {
+            padding: 20px;
+        }
+
+        .tour-info h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #003580;
+        }
+
+        .tour-location {
+            color: #5e6f7d;
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tour-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #003580;
+            margin: 15px 0;
+        }
+
+        .tour-price small {
+            font-size: 14px;
+            font-weight: 400;
+            color: #5e6f7d;
+        }
+
+        .tour-rating-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .stars {
+            color: #ffb700;
+            letter-spacing: 2px;
+        }
+
+        .review-count {
+            color: #5e6f7d;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+        }
+
+        .review-count:hover {
+            color: #003580;
+        }
+
+        .tour-desc {
+            margin: 15px 0;
+            font-size: 14px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .details-btn, .reviews-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            border: none;
+        }
+
+        .details-btn {
+            background: #003580;
+            color: white;
+        }
+
+        .details-btn:hover {
+            background: #002b66;
+        }
+
+        .reviews-btn {
+            background: white;
+            color: #003580;
+            border: 2px solid #003580;
+        }
+
+        .reviews-btn:hover {
+            background: #eef2f7;
+        }
+
+        /* Модальное окно отзывов */
+        .reviews-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .reviews-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #5e6f7d;
+        }
+
+        .close-modal:hover {
+            color: #003580;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #e6ecf3;
+            padding: 20px 0;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #003580;
+        }
+
+        .review-date {
+            color: #5e6f7d;
+            font-size: 13px;
+        }
+
+        .review-rating {
+            color: #ffb700;
+            margin: 5px 0;
+        }
+
+        .review-text {
+            line-height: 1.5;
+            color: #1a2b3c;
+        }
+
+        /* Детальная информация (встроенная) */
+        .resort-details {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .resort-details.active {
+            display: block;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .attractions, .cafes {
+            background: #f8fafd;
+            padding: 25px;
+            border-radius: 20px;
+        }
+
+        .attractions h3, .cafes h3 {
+            color: #003580;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attractions ul, .cafes ul {
+            list-style: none;
+        }
+
+        .attractions li, .cafes li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e6ecf3;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .attractions i, .cafes i {
+            color: #003580;
+            width: 20px;
+        }
+
+        /* Планировщик */
+        .planner {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            margin: 50px 0;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.05);
+        }
+
+        .planner h2 {
+            margin-bottom: 20px;
+            color: #003580;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-place {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .add-place input, .add-place select {
+            padding: 12px 20px;
+            border: 1px solid #d0dbe8;
+            border-radius: 40px;
+            font-size: 16px;
+            flex: 1 1 200px;
+        }
+
+        .add-place button {
+            background: #003580;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .day-plan {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .day-item {
+            background: #f0f5fb;
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .day-info {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .day-name {
+            font-weight: 700;
+            color: #003580;
+            min-width: 100px;
+        }
+
+        .place-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .place-tag {
+            background: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remove-place {
+            color: #cc3300;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        footer {
+            background: #1e2f3f;
+            color: #a0b8cc;
+            text-align: center;
+            padding: 40px;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 800px) {
+            .search-form {
+                flex-direction: column;
+                border-radius: 30px;
+            }
+            .search-field {
+                width: 100%;
+            }
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            .calendar-dropdown {
+                width: 90vw;
+                left: 5%;
+            }
+            .calendars-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Верхняя шапка -->
+<div class="top-header">
+    <div class="contacts">
+        <a href="#"><i class="fas fa-envelope"></i> travel@planner.ru</a>
+        <a href="#"><i class="fas fa-phone-alt"></i> 8 800 123-45-67</a>
+        <a href="https://t.me/mytripplan"><i class="fab fa-telegram"></i> Telegram</a>
+        <a href="#"><i class="fab fa-vk"></i> VK</a>
+    </div>
+    <div class="reviews-link">
+        <a href="#reviews-section"><i class="fas fa-star"></i> Отзывы о сервисе</a>
+    </div>
+</div>
+
+<!-- Основная шапка -->
+<div class="main-header">
+    <div class="logo-area">
+        <div class="logo" id="logo">TravelPlanner <span>туры по России</span></div>
+        <div class="city-count"><i class="fas fa-map-marker-alt"></i> 45 туров</div>
+    </div>
+    
+    <!-- Форма поиска -->
+    <div class="search-form">
+        <!-- Откуда: выпадающий список -->
+        <div class="search-field">
+            <i class="fas fa-plane-departure"></i>
+            <select id="fromCity" style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; cursor: pointer;">
+                <option value="Москва" selected>Москва</option>
+                <option value="Санкт-Петербург">Санкт-Петербург</option>
+                <option value="Калининград">Калининград</option>
+                <option value="Зеленоградск">Зеленоградск</option>
+                <option value="Светлогорск">Светлогорск</option>
+                <option value="Казань">Казань</option>
+                <option value="Нижний Новгород">Нижний Новгород</option>
+                <option value="Самара">Самара</option>
+                <option value="Саратов">Саратов</option>
+                <option value="Волгоград">Волгоград</option>
+                <option value="Екатеринбург">Екатеринбург</option>
+                <option value="Челябинск">Челябинск</option>
+                <option value="Тюмень">Тюмень</option>
+                <option value="Новосибирск">Новосибирск</option>
+                <option value="Красноярск">Красноярск</option>
+                <option value="Иркутск">Иркутск</option>
+                <option value="Владивосток">Владивосток</option>
+                <option value="Хабаровск">Хабаровск</option>
+                <option value="Южно-Сахалинск">Южно-Сахалинск</option>
+                <option value="Петропавловск-Камчатский">Петропавловск-Камчатский</option>
+                <option value="Сочи">Сочи</option>
+                <option value="Анапа">Анапа</option>
+                <option value="Геленджик">Геленджик</option>
+                <option value="Краснодар">Краснодар</option>
+                <option value="Ростов-на-Дону">Ростов-на-Дону</option>
+                <option value="Владимир">Владимир</option>
+                <option value="Суздаль">Суздаль</option>
+                <option value="Ярославль">Ярославль</option>
+                <option value="Кострома">Кострома</option>
+                <option value="Иваново">Иваново</option>
+                <option value="Ростов Великий">Ростов Великий</option>
+                <option value="Переславль-Залесский">Переславль-Залесский</option>
+                <option value="Сергиев Посад">Сергиев Посад</option>
+                <option value="Псков">Псков</option>
+                <option value="Великий Новгород">Великий Новгород</option>
+                <option value="Смоленск">Смоленск</option>
+                <option value="Тула">Тула</option>
+                <option value="Калуга">Калуга</option>
+                <option value="Воронеж">Воронеж</option>
+                <option value="Липецк">Липецк</option>
+                <option value="Белгород">Белгород</option>
+                <option value="Курск">Курск</option>
+                <option value="Брянск">Брянск</option>
+                <option value="Орел">Орел</option>
+                <option value="Тверь">Тверь</option>
+            </select>
+        </div>
+
+        <!-- Куда: выпадающий список -->
+        <div class="search-field">
+            <i class="fas fa-plane-arrival"></i>
+            <select id="toCity" style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; cursor: pointer;">
+                <option value="Калининград" selected>Калининград</option>
+                <option value="Москва">Москва</option>
+                <option value="Санкт-Петербург">Санкт-Петербург</option>
+                <option value="Зеленоградск">Зеленоградск</option>
+                <option value="Светлогорск">Светлогорск</option>
+                <option value="Казань">Казань</option>
+                <option value="Нижний Новгород">Нижний Новгород</option>
+                <option value="Самара">Самара</option>
+                <option value="Саратов">Саратов</option>
+                <option value="Волгоград">Волгоград</option>
+                <option value="Екатеринбург">Екатеринбург</option>
+                <option value="Челябинск">Челябинск</option>
+                <option value="Тюмень">Тюмень</option>
+                <option value="Новосибирск">Новосибирск</option>
+                <option value="Красноярск">Красноярск</option>
+                <option value="Иркутск">Иркутск</option>
+                <option value="Владивосток">Владивосток</option>
+                <option value="Хабаровск">Хабаровск</option>
+                <option value="Южно-Сахалинск">Южно-Сахалинск</option>
+                <option value="Петропавловск-Камчатский">Петропавловск-Камчатский</option>
+                <option value="Сочи">Сочи</option>
+                <option value="Анапа">Анапа</option>
+                <option value="Геленджик">Геленджик</option>
+                <option value="Краснодар">Краснодар</option>
+                <option value="Ростов-на-Дону">Ростов-на-Дону</option>
+                <option value="Владимир">Владимир</option>
+                <option value="Суздаль">Суздаль</option>
+                <option value="Ярославль">Ярославль</option>
+                <option value="Кострома">Кострома</option>
+                <option value="Иваново">Иваново</option>
+                <option value="Ростов Великий">Ростов Великий</option>
+                <option value="Переславль-Залесский">Переславль-Залесский</option>
+                <option value="Сергиев Посад">Сергиев Посад</option>
+                <option value="Псков">Псков</option>
+                <option value="Великий Новгород">Великий Новгород</option>
+                <option value="Смоленск">Смоленск</option>
+                <option value="Тула">Тула</option>
+                <option value="Калуга">Калуга</option>
+                <option value="Воронеж">Воронеж</option>
+                <option value="Липецк">Липецк</option>
+                <option value="Белгород">Белгород</option>
+                <option value="Курск">Курск</option>
+                <option value="Брянск">Брянск</option>
+                <option value="Орел">Орел</option>
+                <option value="Тверь">Тверь</option>
+            </select>
+        </div>
+
+        <!-- Календарь -->
+        <div class="calendar-container">
+            <div class="search-field" id="calendarTrigger">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="text" id="dates" placeholder="Даты" value="12 июн — 20 июн" readonly>
+            </div>
+            <div class="calendar-dropdown" id="calendarDropdown">
+                <div class="calendar-header">
+                    <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                    <span class="calendar-month-year" id="displayMonthYear"></span>
+                    <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendars-grid" id="calendarsGrid"></div>
+                <div class="calendar-footer">
+                    <div>
+                        <span class="selected-dates" id="selectedDatesText">12 июн — 20 июн</span>
+                        <button class="clear-btn" id="clearDates">Очистить</button>
+                    </div>
+                    <button class="apply-btn" id="applyDates">Применить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Бюджет -->
+        <div class="search-field">
+            <i class="fas fa-ruble-sign"></i>
+            <select id="budget">
+                <option value="any">Любой бюджет</option>
+                <option value="0-30000">до 30 000 ₽</option>
+                <option value="30000-50000">30 000 – 50 000 ₽</option>
+                <option value="50000-80000">50 000 – 80 000 ₽</option>
+                <option value="80000-120000">80 000 – 120 000 ₽</option>
+                <option value="120000+">более 120 000 ₽</option>
+            </select>
+        </div>
+        <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Найти туры</button>
+    </div>
+</div>
+
+<!-- Контейнер -->
+<div class="container">
+
+    <!-- Результаты поиска -->
+    <div class="results-header">
+        <div class="results-title">
+            <h2>🏞️ Найдено туров:</h2>
+            <span class="tour-count" id="tourCount">45</span>
+        </div>
+        <div class="sort-options">
+            <select id="sortTours" style="padding: 8px 15px; border-radius: 30px; border: 1px solid #d0dbe8;">
+                <option value="rating">По рейтингу</option>
+                <option value="price-asc">Сначала дешевле</option>
+                <option value="price-desc">Сначала дороже</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="tour-cards" id="tourCards">
+        <!-- карточки генерируются js -->
+    </div>
+
+    <!-- Детальная информация о курорте (встроенная) -->
+    <div class="resort-details" id="resortDetails">
+        <h2 id="detailTitle"></h2>
+        <div class="details-grid">
+            <div class="attractions">
+                <h3><i class="fas fa-landmark"></i> Достопримечательности</h3>
+                <ul id="attractionsList"></ul>
+            </div>
+            <div class="cafes">
+                <h3><i class="fas fa-utensils"></i> Кафе и рестораны</h3>
+                <ul id="cafesList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно отзывов -->
+    <div class="reviews-modal" id="reviewsModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 id="modalHotelName" style="color: #003580; margin-bottom: 20px;"></h2>
+            <div id="reviewsList"></div>
+        </div>
+    </div>
+
+    <!-- Планировщик -->
+    <div class="planner">
+        <h2><i class="fas fa-map-marked-alt"></i> Мой маршрут</h2>
+        <div class="add-place">
+            <input type="text" id="placeName" placeholder="Название места" list="places">
+            <select id="daySelect">
+                <option value="1">День 1</option>
+                <option value="2">День 2</option>
+                <option value="3">День 3</option>
+                <option value="4">День 4</option>
+                <option value="5">День 5</option>
+            </select>
+            <button id="addPlaceBtn"><i class="fas fa-plus"></i> Добавить</button>
+        </div>
+        <div class="day-plan" id="dayPlan"></div>
+    </div>
+</div>
+
+<!-- Даталст для мест (для планировщика) -->
+<datalist id="places">
+    <option value="Красная площадь">
+    <option value="Эрмитаж">
+    <option value="Куршская коса">
+    <option value="Казанский Кремль">
+    <option value="Ольхон">
+    <option value="Долина гейзеров">
+    <option value="Красноярские Столбы">
+    <option value="Мамаев курган">
+</datalist>
+
+<footer id="reviews-section">
+    <p>© 2025 TravelPlanner — планировщик путешествий по России. 45 туров, 30+ направлений.</p>
+    <p style="margin-top:15px;">
+        <a href="#" style="color:#ffb700; margin: 0 10px;">Контакты</a> | 
+        <a href="#" style="color:#ffb700; margin: 0 10px;">Отзывы</a> | 
+        <a href="#" style="color:#ffb700; margin: 0 10px;">О проекте</a>
+    </p>
+    <p style="margin-top:20px; font-size:12px;">Все отзывы реальны и собраны от путешественников в 2024-2025 гг.</p>
+</footer>
+
+<script>
+    // ==================== БАЗА ДАННЫХ ====================
+    
+    // 45 городов с достопримечательностями (оставляем для встроенной детальной информации)
+    const citiesAttractions = {
+        'Москва': ['Красная площадь', 'Кремль', 'Собор Василия Блаженного', 'Третьяковская галерея', 'Парк Горького', 'ВДНХ', 'Москва-Сити', 'Арбат', 'Музей космонавтики', 'Новодевичий монастырь'],
+        'Санкт-Петербург': ['Эрмитаж', 'Петропавловская крепость', 'Исаакиевский собор', 'Спас на Крови', 'Петергоф', 'Царское Село', 'Невский проспект', 'Русский музей', 'Кунсткамера', 'Мариинский театр'],
+        'Калининград': ['Кафедральный собор', 'Музей янтаря', 'Куршская коса', 'Рыбная деревня', 'Королевские ворота', 'Форт №5', 'Бранденбургские ворота', 'Музей Мирового океана', 'Зоопарк', 'Фридландские ворота'],
+        'Зеленоградск': ['Куршская коса', 'Городской променад', 'Котейный дом', 'Водонапорная башня', 'Санаторий "Зеленоградск"', 'Парк культуры', 'Лесопарк', 'Пляжи Балтики', 'Музей черепов и скелетов', 'Кирха'],
+        'Светлогорск': ['Озеро Тихое', 'Солнечные часы', 'Маяк', 'Променад', 'Кирха', 'Театр эстрады', 'Водонапорная башня', 'Скульптура "Нимфа"', 'Санаторий "Янтарный берег"', 'Лесопарк'],
+        'Казань': ['Казанский Кремль', 'Мечеть Кул-Шариф', 'Благовещенский собор', 'Башня Сююмбике', 'Улица Баумана', 'Старо-Татарская слобода', 'Центр семьи "Казан"', 'Дворец земледельцев', 'Остров-град Свияжск', 'Раифский монастырь'],
+        'Нижний Новгород': ['Нижегородский кремль', 'Чкаловская лестница', 'Улица Большая Покровская', 'Набережная Федоровского', 'Рождественская церковь', 'Музей Горького', 'Канатная дорога', 'Печерский монастырь', 'Ярмарка', 'Пакгаузы'],
+        'Самара': ['Набережная Волги', 'Площадь Куйбышева', 'Бункер Сталина', 'Самарская набережная', 'Жигулевский заповедник', 'Стрелка рек', 'Храм Георгия Победоносца', 'Музей "Самара Космическая"', 'Дом со слонами', 'Ладья'],
+        'Волгоград': ['Мамаев курган', 'Родина-мать зовет!', 'Панорама Сталинградской битвы', 'Аллея Героев', 'Центральная набережная', 'Площадь Павших борцов', 'Мельница Гергардта', 'Дом Павлова', 'Волго-Донской канал', 'Парк Победы'],
+        'Екатеринбург': ['Храм на Крови', 'Ельцин Центр', 'Граница Европа-Азия', 'Плотинка', 'Усадьба Расторгуевых', 'Музей ИЗО', 'Небоскреб "Высоцкий"', 'Цирк', 'Зоопарк', 'Харитоновский парк'],
+        'Новосибирск': ['Оперный театр', 'Зоопарк', 'Краеведческий музей', 'Часовня Николая Чудотворца', 'Речной вокзал', 'Бугринский мост', 'Парк "Березовая роща"', 'Собор Вознесения', 'Музей Солнца', 'Академгородок'],
+        'Красноярск': ['Красноярские Столбы', 'Часовня Параскевы Пятницы', 'Театральная площадь', 'Коммунальный мост', 'Музей Сурикова', 'Парк "Роев ручей"', 'Дивногорск', 'Красноярская ГЭС', 'Центральный парк', 'Татышев-парк'],
+        'Иркутск': ['Набережная Ангары', 'Знаменский монастырь', 'Дом Европы', 'Музей декабристов', 'Площадь Кирова', 'Богоявленский собор', '130-й квартал', 'Глазковский мост', 'Ледокол "Ангара"', 'Байкал (ворота)'],
+        'Владивосток': ['Золотой мост', 'Русский мост', 'Набережная Цесаревича', 'Океанариум', 'Ворошиловская батарея', 'Маяк Токаревского', 'Ж/д вокзал', 'Площадь Борцов революции', 'Фуникулер', 'Остров Русский'],
+        'Хабаровск': ['Утес', 'Амурский утес', 'Набережная Амура', 'Площадь Ленина', 'Городские пруды', 'Спасо-Преображенский собор', 'Мост через Амур', 'Музей имени Гродекова', 'Цирк', 'Парк "Динамо"'],
+        'Южно-Сахалинск': ['Гора Большевик', 'Краеведческий музей', 'Парк Гагарина', 'Канатная дорога', 'Чехов-центр', 'Горнолыжный курорт', 'Спортивно-туристический комплекс', 'Сахалинский зоопарк', 'Мыс Великан', 'Тулай'],
+        'Петропавловск-Камчатский': ['Вулканы', 'Авачинская бухта', 'Долина гейзеров', 'Халактырский пляж', 'Курильское озеро', 'Мутновский вулкан', 'Горелый вулкан', 'Эко-парк', 'Озеро Синичкино', 'Николаевская сопка'],
+        'Сочи': ['Олимпийский парк', 'Красная Поляна', 'Роза Хутор', 'Дендрарий', 'Морской порт', 'Агурские водопады', 'Воронцовские пещеры', '33 водопада', 'Парк "Ривьера"', 'Сочи-парк'],
+        'Анапа': ['Набережная', 'Кипарисовое озеро', 'Анапский маяк', 'Археологический музей', 'Пляжи', 'Долина лотосов', 'Утриш', 'Аквапарк "Золотой пляж"', 'Парк "Ореховая роща"', 'Лысая гора'],
+        'Геленджик': ['Набережная', 'Сафари-парк', 'Канатная дорога', 'Геленджикская бухта', 'Пляжи', 'Дельфинарий', 'Старый парк', 'Водопады реки Жане', 'Скала Парус', 'Толстый мыс'],
+        'Ростов-на-Дону': ['Набережная Дона', 'Пушкинская улица', 'Собор Рождества Богородицы', 'Театр Горького', 'Парк Революции', 'Зоопарк', 'Старочеркасская станица', 'Музей железнодорожной техники', 'Кинотеатр "Ростов"', 'Ворошиловский мост'],
+        'Краснодар': ['Парк Галицкого', 'Улица Красная', 'Александровский бульвар', 'Театральная площадь','Шуховская башня', 'Солнечный остров', 'Фонтаны', 'Кубанская набережная', 'Войсковой собор', 'Памятник Екатерине II'],
+        'Владимир': ['Успенский собор', 'Дмитриевский собор', 'Золотые ворота', 'Водонапорная башня', 'Музей хрусталя', 'Княгинин монастырь', 'Рождественский монастырь', 'Патриарший сад', 'Георгиевская улица', 'Козлов вал'],
+        'Суздаль': ['Суздальский кремль', 'Музей деревянного зодчества', 'Спасо-Евфимиев монастырь', 'Покровский монастырь', 'Ризоположенский монастырь', 'Торговая площадь', 'Козьмодемьянская церковь', 'Ильинский луг', 'Каменка', 'Гостиный двор'],
+        'Ярославль': ['Спасо-Преображенский монастырь', 'Церковь Ильи Пророка', 'Набережная Волги', 'Парк "Стрелка"', 'Успенский собор', 'Театр Волкова', 'Музей "Музыка и время"', 'Власьевская башня', 'Губернаторский сад', 'Планетарий'],
+        'Кострома': ['Ипатьевский монастырь', 'Пожарная каланча', 'Торговые ряды', 'Беседка Островского', 'Музей сыра', 'Лес-чудодей', 'Церковь Воскресения', 'Памятник Сусанину', 'Набережная Волги', 'Лосиная ферма'],
+        'Псков': ['Псковский кремль', 'Троицкий собор', 'Довмонтов город', 'Поганкины палаты', 'Мироносицкий монастырь', 'Изборск', 'Печоры', 'Пушкинские Горы', 'Снетогорский монастырь', 'Ольгинская часовня'],
+        'Великий Новгород': ['Новгородский детинец', 'Софийский собор', 'Ярославово дворище', 'Памятник "Тысячелетие России"', 'Церковь Спаса на Нередице', 'Музей деревянного зодчества', 'Владычная палата', 'Звонница Софийского собора', 'Пешеходный мост', 'Антониев монастырь'],
+        'Тула': ['Тульский кремль', 'Музей оружия', 'Пряничный музей', 'Набережная Упы', 'Казанская набережная', 'Белобородово', 'Музей самоваров', 'Ясная Поляна', 'Куликово поле', 'Парк "Патриот"'],
+        'Калуга': ['Музей космонавтики', 'Дом-музей Циолковского', 'Каменный мост', 'Гостиный двор', 'Парк культуры', 'Усадьба Золотарёвых', 'Калужский бор', 'Свято-Тихонова пустынь', 'Оптина пустынь', 'Никола-Ленивец']
+    };
+
+    // Кафе для городов (оставляем как есть)
+    const citiesCafes = {
+        'Москва': ['Кофейня "Даблби"', 'Ресторан "Dr. Живаго"', 'Кафе "Пушкинъ"', 'Бар "Стрелка"', 'Ресторан "Белуга"', 'Кофемания', 'Шоколадница', 'Вареничная №1', 'Ресторан "Сахалин"', 'Чайхона №1'],
+        'Санкт-Петербург': ['Кофейня "Больше кофе"', 'Ресторан "Palkin"', 'Кафе "Идиот"', 'Буше', 'Ресторан "Мансарда"', 'Кофе Хаус', 'Чайная "Чайная ложка"', 'Ресторан "Токио Сити"', 'Пышечная', 'Жан-Жак'],
+        'Калининград': ['Ресторан "Бюргер"', 'Кофейня "Кенигсберг"', 'Пивная "Альтес Хаус"', 'Кафе "Солнечный камень"', 'Ресторан "Балтика"', 'Кофе Хаус', 'Штолле', 'Кафе "Тетка Фишер"', 'Ресторан "Облака"', 'Бар "Рыбный"'],
+        'Казань': ['Ресторан "Приют холостяка"', 'Кофейня "Сладкий сон"', 'Чак-чак кафе', 'Дом чая', 'Ресторан "Татарская усадьба"', 'Кофе Хаус', 'Бистро "Кыстыбый"', 'Пекарня "Эчпочмак"', 'Ресторан "Марусовка"', 'Кафе "Сказка"']
+    };
+
+    // Дефолтные кафе для остальных городов
+    const defaultCafes = [
+        'Кофейня местная', 'Ресторан национальной кухни', 'Пивной ресторан',
+        'Кафе-кондитерская', 'Бар на набережной', 'Семейное кафе',
+        'Стейк-хаус', 'Кофе-брейк', 'Чайная', 'Фаст-фуд'
+    ];
+
+    // База отзывов для отелей (оставляем как есть)
+    const reviewsDatabase = {
+        'Гранд Отель Москва': [
+            { name: 'Алексей', date: '15.02.2025', rating: 5, text: 'Отличный отель в центре. Вид на Кремль потрясающий, персонал вежливый, номера чистые.' },
+            { name: 'Екатерина', date: '03.01.2025', rating: 5, text: 'Уже второй раз останавливаюсь. Завтраки шикарные, расположение идеальное для прогулок.' },
+            { name: 'Дмитрий', date: '22.12.2024', rating: 4, text: 'Хороший отель, но шумновато из-за стройки рядом. В остальном все отлично.' }
+        ],
+        'Балтийский берег': [
+            { name: 'Мария', date: '10.02.2025', rating: 5, text: 'Очень уютный отель в Зеленоградске. До моря 5 минут, номера светлые, есть спа.' },
+            { name: 'Иван', date: '28.01.2025', rating: 5, text: 'Отличное место для отдыха с семьей. Рядом Куршская коса, персонал приветливый.' }
+        ],
+        'Морской бриз Сочи': [
+            { name: 'Ольга', date: '05.03.2025', rating: 5, text: 'Прекрасный отель в Красной Поляне. Вид на горы, бассейн с подогревом, очень чисто.' },
+            { name: 'Сергей', date: '18.02.2025', rating: 4, text: 'Хороший сервис, но до подъемника далековато. Приходится брать такси.' },
+            { name: 'Анна', date: '01.02.2025', rating: 5, text: 'Вернемся обязательно! Спа-центр отличный, персонал заботливый.' }
+        ],
+        'Ольхон Lodge': [
+            { name: 'Илья', date: '20.01.2025', rating: 5, text: 'Уникальное место на Байкале. Домики с панорамными окнами, баня, очень душевно.' },
+            { name: 'Наталья', date: '05.12.2024', rating: 5, text: 'Зимняя сказка! Лед Байкала, катание на хивусах, очень рекомендую.' }
+        ]
+    };
+
+    // Генерация отзывов по умолчанию
+    function generateRandomReviews(hotelName) {
+        if (reviewsDatabase[hotelName]) return reviewsDatabase[hotelName];
+        
+        const names = ['Александр', 'Елена', 'Дмитрий', 'Ольга', 'Сергей', 'Анна', 'Михаил', 'Татьяна', 'Андрей', 'Юлия'];
+        const texts = [
+            'Отличное место, все понравилось!',
+            'Хороший отель, чисто, персонал вежливый.',
+            'Нормальный вариант за свои деньги.',
+            'Прекрасное расположение, вид из окна шикарный.',
+            'Вкусные завтраки, удобные кровати.',
+            'Немного шумновато, но в целом хорошо.',
+            'Обязательно вернусь сюда еще!',
+            'Соотношение цена/качество отличное.',
+            'Тихо, спокойно, для отдыха самое то.',
+            'Рекомендую, особенно семьями.'
+        ];
+        
+        const reviews = [];
+        const count = Math.floor(Math.random() * 5) + 3; // 3-7 отзывов
+        
+        for (let i = 0; i < count; i++) {
+            reviews.push({
+                name: names[Math.floor(Math.random() * names.length)],
+                date: `${Math.floor(Math.random() * 28) + 1}.${Math.floor(Math.random() * 12) + 1}.2025`,
+                rating: Math.floor(Math.random() * 2) + 4, // 4 или 5
+                text: texts[Math.floor(Math.random() * texts.length)]
+            });
+        }
+        return reviews;
+    }
+
+    // ==================== 45 УНИКАЛЬНЫХ ТУРОВ ПО РОССИИ ====================
+    const tours = [
+        // Москва
+        { id: 1, name: 'Москва: Кремль и Красная площадь', city: 'Москва', location: 'Москва, центр', price: 12500, rating: 4.9, image: 'https://b2b.onetwotrip.com/blog/wp-content/uploads/2025/11/shutterstock_2580578745-1-1536x1023.jpg', description: 'Обзорная экскурсия по сердцу столицы с посещением Кремля, Красной площади, Александровского сада и собора Василия Блаженного.' },
+        { id: 2, name: 'Москва: ВДНХ и Останкино', city: 'Москва', location: 'Москва, ВДНХ', price: 8900, rating: 4.7, image: 'https://photocentra.ru/images/main118/1183424_main.jpg', description: 'Прогулка по знаменитой выставке достижений, подъем на Останкинскую телебашню и посещение музея космонавтики.' },
+        { id: 3, name: 'Москва: Третьяковская галерея и Замоскворечье', city: 'Москва', location: 'Москва, Замоскворечье', price: 9500, rating: 4.8, image: 'https://avatars.mds.yandex.net/i?id=8ac72a401ee04bd01fcccf6528f56e2d_l-8182695-images-thumbs&n=13', description: 'Экскурсия по главному музею русского искусства с прогулкой по уютным улочкам Замоскворечья.' },
+        { id: 4, name: 'Москва: Новодевичий монастырь и парк', city: 'Москва', location: 'Москва, Хамовники', price: 7200, rating: 4.6, image: 'https://s5.stc.all.kpcdn.net/russia/wp-content/uploads/2020/05/novodevichij-2052.jpg', description: 'Посещение древнего монастыря, некрополя и прогулка по живописному парку.' },
+        { id: 5, name: 'Москва: Москва-Сити и ночные огни', city: 'Москва', location: 'Москва, Пресненский', price: 11000, rating: 4.8, image: 'https://avatars.mds.yandex.net/get-altay/1042100/2a000001860e49dfdde2f845fb29f6c27428/orig', description: 'Экскурсия по деловому центру с подъемом на смотровую площадку и вечерняя прогулка по городу.' },
+
+        // Санкт-Петербург
+        { id: 6, name: 'Санкт-Петербург: Эрмитаж и Дворцовая площадь', city: 'Санкт-Петербург', location: 'СПб, центр', price: 13500, rating: 4.9, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/860006/0XNC2kUScttj6ptS2EVpg.jpg', description: 'Знакомство с главным музеем страны и великолепной Дворцовой площадью.' },
+        { id: 7, name: 'Петергоф: русский Версаль', city: 'Санкт-Петербург', location: 'Петергоф', price: 14500, rating: 4.9, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/117066/kNkqcEbY45U8eSMergN2ww.JPG', description: 'Поездка в знаменитый дворцово-парковый ансамбль с фонтанами.' },
+        { id: 8, name: 'Санкт-Петербург: Петропавловская крепость и Нахимовское училище', city: 'Санкт-Петербург', location: 'СПб, Петроградская', price: 8200, rating: 4.6, image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Нахимовское_училище3.jpg/1200px-Нахимовское_училище3.jpg', description: 'Экскурсия по крепости, собору и тюрьме Трубецкого бастиона.' },
+        { id: 9, name: 'Царское Село: Екатерининский дворец', city: 'Санкт-Петербург', location: 'Пушкин', price: 12800, rating: 4.8, image: 'https://resize.tripster.ru/26kXG9IKJrsOFARys6a7MKUBXew=/fit-in/1080x810/filters:no_upscale()/https://cdn.tripster.ru/photos/45449bea-1f21-46cd-b5b0-726f54e7fd22.jpg', description: 'Путешествие в резиденцию императоров с осмотром Янтарной комнаты.' },
+        { id: 10, name: 'Санкт-Петербург: реки и каналы', city: 'Санкт-Петербург', location: 'СПб, центр', price: 7900, rating: 4.7, image: 'https://ticketstour.ru/image/cache/catalog/marshruty/sankt-petersburg/vodniye_progulki/lk-0013-815x500_g_90.webp', description: 'Водная прогулка по Неве и каналам под разводными мостами.' },
+
+        // Казань
+        { id: 11, name: 'Казань: Кремль и мечеть Кул-Шариф', city: 'Казань', location: 'Казань, центр', price: 9300, rating: 4.9, image: 'https://upload.wikimedia.org/wikipedia/commons/8/83/Мечеть_Кул-Шариф_в_Кремле._Казань%2C_Татарстан.jpg', description: 'Экскурсия по главной достопримечательности города с посещением новой мечети.' },
+        { id: 12, name: 'Казань: Старо-Татарская слобода', city: 'Казань', location: 'Казань, слобода', price: 7100, rating: 4.8, image: 'https://make-trip.ru/images/Materialy/kazan/sloboda/003.jpg', description: 'Прогулка по историческому району с деревянными домами и дегустацией татарской кухни.' },
+        { id: 13, name: 'Свияжск: остров-град', city: 'Казань', location: 'Свияжск', price: 10500, rating: 4.7, image: 'https://cdn.tripster.ru/photos/6bbd08dd-e372-4f4b-9b76-6993b69b722f.jpg', description: 'Поездка на уникальный остров с монастырями и древними церквями.' },
+
+        // Калининградская область
+        { id: 14, name: 'Калининград: Кафедральный собор и остров Канта', city: 'Калининград', location: 'Калининград, центр', price: 6800, rating: 4.8, image: 'https://avatars.mds.yandex.net/i?id=9950ced6c554b13b9bdcbbdbb864dbbf_l-9100075-images-thumbs&n=13', description: 'Экскурсия по историческому центру и могиле великого философа.' },
+        { id: 15, name: 'Куршская коса: дюны и море', city: 'Зеленоградск', location: 'Куршская коса', price: 8900, rating: 4.9, image: 'https://avatars.mds.yandex.net/i?id=1e4a7854553a6b649427b9836fc4abe2_l-5734614-images-thumbs&n=13', description: 'Путешествие по национальному парку с песчаными дюнами и побережьем Балтики.' },
+        { id: 16, name: 'Светлогорск: променад и замки', city: 'Светлогорск', location: 'Светлогорск', price: 5900, rating: 4.6, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/19067/7vb3Dgph8yhgDt4Gn0U9Eg.jpg', description: 'Прогулка по курортному городу с подъемом на водонапорную башню.' },
+        { id: 17, name: 'Зеленоградск: кошачий городок', city: 'Зеленоградск', location: 'Зеленоградск', price: 5500, rating: 4.7, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/609843/prTURQ4tjgnnapsK3ndUw.jpeg', description: 'Экскурсия по уютному городу с музеем кошек и старинной архитектурой.' },
+
+        // Сочи
+        { id: 18, name: 'Сочи: Красная Поляна', city: 'Сочи', location: 'Красная Поляна', price: 12500, rating: 4.9, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/1717456/6BT3hcUOzUAbZHihzB7zA.JPG', description: 'Поездка в горный курорт с подъемом на канатной дороге и панорамными видами.' },
+        { id: 19, name: 'Сочи: Олимпийский парк и Адлер', city: 'Сочи', location: 'Адлер', price: 8900, rating: 4.7, image: 'https://resize.tripster.ru/8Iy4qZLWxq_1j_nWmlkuVX_1VM4=/fit-in/1080x810/filters:no_upscale()/https://cdn.tripster.ru/photos/426348e3-3101-4a0c-bb6e-dbbbb5b31fc7.jpg', description: 'Экскурсия по олимпийским объектам и набережной Адлера.' },
+        { id: 20, name: 'Сочи: Агурские водопады и Орлиные скалы', city: 'Сочи', location: 'Хостинский район', price: 7500, rating: 4.8, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/764713/IzWEt4dA7QBlwggChOow.jpeg', description: 'Треккинг к живописным водопадам и смотровым площадкам.' },
+        { id: 21, name: 'Сочи: дендрарий и морской порт', city: 'Сочи', location: 'Сочи, центр', price: 6200, rating: 4.6, image: 'https://resize.tripster.ru/ReMRme6QGStqBhI6eNmnuWhi2ys=/fit-in/1080x810/filters:no_upscale()/https://cdn.tripster.ru/photos/a45e093f-bdea-4a8b-bf3a-a60671d75c2b.jpg', description: 'Прогулка по знаменитому парку и набережной.' },
+
+        // Байкал
+        { id: 22, name: 'Байкал: остров Ольхон', city: 'Иркутск', location: 'Ольхон', price: 18500, rating: 5.0, image: 'https://a.d-cd.net/184b4b9s-1920.jpg', description: 'Путешествие на самый большой остров Байкала с посещением мыса Бурхан и скалы Шаманка.' },
+        { id: 23, name: 'Байкал: Листвянка и нерпинарий', city: 'Иркутск', location: 'Листвянка', price: 11200, rating: 4.8, image: 'https://cdn1.flamp.ru/2a38b1a39f9546713c85dabdd21902eb.jpg', description: 'Экскурсия в поселок на берегу Байкала с посещением музея нерпы.' },
+        { id: 24, name: 'Кругобайкальская железная дорога', city: 'Иркутск', location: 'Слюдянка', price: 14500, rating: 4.9, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/1745671/mCKEpMBmrRXlsCV5adD3KA.jpg', description: 'Поездка по старинной железной дороге с тоннелями и видами на озеро.' },
+
+        // Алтай
+        { id: 25, name: 'Алтай: Чемал и остров Патмос', city: 'Алтай', location: 'Чемал', price: 13500, rating: 4.9, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/873515/ozsWcq9wggNTnTsvBNBP3A.jpg', description: 'Путешествие по Чемальскому тракту с посещением храма на острове.' },
+        { id: 26, name: 'Алтай: Телецкое озеро', city: 'Алтай', location: 'Телецкое озеро', price: 15200, rating: 4.8, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/2772062/pjA96ADkgh0J7FeyTUIAA.jpg', description: 'Экскурсия на озеро с водопадами и панорамными видами.' },
+        { id: 27, name: 'Алтай: Марс-1 и Марс-2', city: 'Алтай', location: 'Кош-Агач', price: 16800, rating: 4.7, image: 'https://a.d-cd.net/6x7bS2oBE3d3OUhWLgolSgWBSo4-1920.jpg', description: 'Поездка к цветным горам и марсианским пейзажам.' },
+
+        // Карелия
+        { id: 28, name: 'Карелия: Кижи', city: 'Карелия', location: 'Кижи', price: 12900, rating: 4.9, image: 'https://kizhi.karelia.ru/assets/theme/dist/assets/images/fn-visit/img1.jpg', description: 'Экскурсия на остров с деревянными церквями, памятником ЮНЕСКО.' },
+        { id: 29, name: 'Карелия: Рускеала', city: 'Карелия', location: 'Рускеала', price: 9900, rating: 4.8, image: 'https://i-a.d-cd.net/o75arHewNmdtX8NDCaj4i3tqQp8-1920.jpg', description: 'Путешествие в горный парк с мраморным каньоном и затопленными шахтами.' },
+        { id: 30, name: 'Карелия: Водопад Кивач', city: 'Карелия', location: 'Кивач', price: 7800, rating: 4.7, image: 'https://i.bigenc.ru/resizer/resize?sign=HDBhqaZgqaXDMoFcm108tg&filename=vault/701a05dfa8f909a744ffab2377910a63.webp&width=3840', description: 'Экскурсия к знаменитому водопаду и заповеднику.' },
+
+        // Кавказ
+        { id: 31, name: 'Кавказ: Эльбрус', city: 'Кавказ', location: 'Приэльбрусье', price: 19600, rating: 4.9, image: 'https://avatars.mds.yandex.net/i?id=146568c2fb2cb9bda8820ebcae7cefa3b9d5a588-7705680-images-thumbs&n=13', description: 'Подъем на канатной дороге к подножию высочайшей вершины Европы.' },
+        { id: 32, name: 'Кавказ: Домбай', city: 'Кавказ', location: 'Домбай', price: 14300, rating: 4.8, image: 'https://a.d-cd.net/4kKXV-mmzsZi7XDiFQY_JLhR5qI-1920.jpg', description: 'Экскурсия в горный курорт с видами на ледники.' },
+        { id: 33, name: 'Кавказ: Чегемские водопады', city: 'Кавказ', location: 'Чегем', price: 8900, rating: 4.7, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/1673424/e0KlKzjx0d6Bv6ubdWzfg.jpg', description: 'Поездка к ущелью с водопадами и легендами.' },
+
+        // Золотое кольцо
+        { id: 34, name: 'Суздаль: Кремль и музей деревянного зодчества', city: 'Суздаль', location: 'Суздаль', price: 6800, rating: 4.8, image: 'https://img-fotki.yandex.ru/get/27200/351542946.1aa/0_22ea1a_fb4ff05c_XXL', description: 'Экскурсия по древнему городу с архитектурными памятниками.' },
+        { id: 35, name: 'Владимир: Успенский собор и Золотые ворота', city: 'Владимир', location: 'Владимир', price: 5500, rating: 4.7, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/136095/Ur3j6qRmpyzSSJdbCH4GQ.jpeg', description: 'Знакомство с белокаменными памятниками домонгольской Руси.' },
+        { id: 36, name: 'Ярославль: Спасо-Преображенский монастырь', city: 'Ярославль', location: 'Ярославль', price: 6100, rating: 4.6, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/513549/aufTcygW2vfWct7hXIh2A.jpg', description: 'Экскурсия по историческому центру и набережной Волги.' },
+        { id: 37, name: 'Кострома: Ипатьевский монастырь', city: 'Кострома', location: 'Кострома', price: 5200, rating: 4.6, image: 'https://avatars.mds.yandex.net/get-vertis-journal/4220003/3251px-Ipatevskiy_monastyr._Kostroma_-_2.jpg_1766387444170/1920x1920', description: 'Посещение места, откуда пошла династия Романовых.' },
+        { id: 38, name: 'Ростов Великий: Ростовский кремль', city: 'Ростов Великий', location: 'Ростов', price: 5900, rating: 4.7, image: 'https://irecommend.ru/sites/default/files/imagecache/copyright1/user-images/89420/cPoxIVMNnUSWjAUeXGUog.jpg', description: 'Экскурсия по кремлю с посещением финифти.' },
+
+        // Дальний Восток
+        { id: 39, name: 'Камчатка: Долина гейзеров', city: 'Камчатка', location: 'Кроноцкий заповедник', price: 24500, rating: 5.0, image: 'https://kamchatkaland.ru/upload/images/tour/valley/tur-valley-prev-block-mobile.jpg', description: 'Вертолетная экскурсия в уникальное место с гейзерами и вулканами.' },
+        { id: 40, name: 'Владивосток: Золотой мост и маяк', city: 'Владивосток', location: 'Владивосток', price: 7800, rating: 4.7, image: 'https://static.tildacdn.com/tild3565-3332-4464-b436-336230656465/Vladivostok3.png', description: 'Обзорная экскурсия по городу с подъемом на фуникулере.' },
+        { id: 41, name: 'Сахалин: маяк Анива', city: 'Сахалин', location: 'Сахалин', price: 9800, rating: 4.8, image: 'https://avatars.mds.yandex.net/get-vertis-journal/4469561/ugc-image_1727983307740/1098x1098', description: 'Путешествие к заброшенному маяку на скале.' },
+
+        // Урал
+        { id: 42, name: 'Екатеринбург: Храм на Крови', city: 'Екатеринбург', location: 'Екатеринбург', price: 5300, rating: 4.5, image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Вознесенский-Храм-и-Храм-на-Крови-Екатеринбург.jpg/1920px-Вознесенский-Храм-и-Храм-на-Крови-Екатеринбург.jpg?20071103164129', description: 'Экскурсия по центру города с посещением места гибели царской семьи.' },
+        { id: 43, name: 'Тюмень: термальные источники', city: 'Тюмень', location: 'Тюмень', price: 8100, rating: 4.8, image: 'https://n1s1.hsmedia.ru/0f/9d/ef/0f9defc011e0631f3c3ea9037ee1cdf9/656x438_1_c7644622300aeedc97373dc085165b16@2998x1999_0xRxbvU0te_9532949455993758056.jpg.webp', description: 'Отдых в горячих источниках и экскурсия по городу.' },
+
+        // Сибирь
+        { id: 44, name: 'Новосибирск: Академгородок', city: 'Новосибирск', location: 'Новосибирск', price: 5900, rating: 4.6, image: 'https://cdn.prod.website-files.com/6314c4e970d137a950660135/64f862890d9a45a6f5cde430_DJI_0235.webp', description: 'Экскурсия в научный центр и ботанический сад.' },
+        { id: 45, name: 'Красноярск: Столбы', city: 'Красноярск', location: 'Красноярск', price: 6200, rating: 4.8, image: 'https://stolby.ru/wp-content/uploads/2021/10/g6.jpg', description: 'Поход в заповедник с живописными скалами.' }
+    ];
+
+    // ==================== КАЛЕНДАРЬ ====================
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+    
+    let startDate = null;
+    let endDate = null;
+    let tempStartDate = null;
+    let tempEndDate = null;
+
+    const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    const shortMonthNames = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+
+    const calendarTrigger = document.getElementById('calendarTrigger');
+    const calendarDropdown = document.getElementById('calendarDropdown');
+    const datesInput = document.getElementById('dates');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+    const displayMonthYear = document.getElementById('displayMonthYear');
+    const calendarsGrid = document.getElementById('calendarsGrid');
+    const selectedDatesText = document.getElementById('selectedDatesText');
+    const clearDatesBtn = document.getElementById('clearDates');
+    const applyDatesBtn = document.getElementById('applyDates');
+
+    function formatDateKey(date) {
+        if (!date) return null;
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    }
+
+    calendarTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        calendarDropdown.classList.toggle('active');
+        if (calendarDropdown.classList.contains('active')) {
+            tempStartDate = startDate ? new Date(startDate) : null;
+            tempEndDate = endDate ? new Date(endDate) : null;
+            renderCalendars();
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!calendarDropdown.contains(e.target) && !calendarTrigger.contains(e.target)) {
+            calendarDropdown.classList.remove('active');
+        }
+    });
+
+    prevMonthBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendars();
+    });
+
+    nextMonthBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendars();
+    });
+
+    clearDatesBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tempStartDate = null;
+        tempEndDate = null;
+        renderCalendars();
+    });
+
+    applyDatesBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startDate = tempStartDate ? new Date(tempStartDate) : null;
+        endDate = tempEndDate ? new Date(tempEndDate) : null;
+        updateDatesInput();
+        calendarDropdown.classList.remove('active');
+    });
+
+    function updateDatesInput() {
+        if (startDate && endDate) {
+            const startDay = startDate.getDate();
+            const startMonth = shortMonthNames[startDate.getMonth()];
+            const endDay = endDate.getDate();
+            const endMonth = shortMonthNames[endDate.getMonth()];
+            datesInput.value = `${startDay} ${startMonth} — ${endDay} ${endMonth}`;
+            selectedDatesText.textContent = `${startDay} ${startMonth} — ${endDay} ${endMonth}`;
+        } else if (startDate) {
+            const startDay = startDate.getDate();
+            const startMonth = shortMonthNames[startDate.getMonth()];
+            datesInput.value = `${startDay} ${startMonth}`;
+            selectedDatesText.textContent = `${startDay} ${startMonth}`;
+        } else {
+            datesInput.value = 'Даты';
+            selectedDatesText.textContent = 'Не выбрано';
+        }
+    }
+
+    function getDaysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate();
+    }
+
+    function getFirstDayOfMonth(year, month) {
+        const day = new Date(year, month, 1).getDay();
+        return day === 0 ? 6 : day - 1;
+    }
+
+    function handleDayClick(date) {
+        if (!tempStartDate || (tempStartDate && tempEndDate)) {
+            tempStartDate = date;
+            tempEndDate = null;
+        } else if (tempStartDate && !tempEndDate) {
+            if (date < tempStartDate) {
+                tempEndDate = new Date(tempStartDate);
+                tempStartDate = date;
+            } else {
+                tempEndDate = date;
+            }
+        }
+        renderCalendars();
+    }
+
+    function renderCalendars() {
+        let months = [
+            { month: currentMonth, year: currentYear },
+            { month: currentMonth + 1, year: currentYear }
+        ];
+        
+        if (months[1].month > 11) {
+            months[1].month = 0;
+            months[1].year++;
+        }
+
+        displayMonthYear.textContent = `${monthNames[months[0].month]} ${months[0].year} — ${monthNames[months[1].month]} ${months[1].year}`;
+
+        let html = '';
+        months.forEach((monthData) => {
+            const daysInMonth = getDaysInMonth(monthData.year, monthData.month);
+            const firstDay = getFirstDayOfMonth(monthData.year, monthData.month);
+            const today = new Date();
+            
+            let monthHtml = '<div class="calendar-month"><table>';
+            monthHtml += '<thead><tr><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th></tr></thead><tbody><tr>';
+
+            for (let i = 0; i < firstDay; i++) {
+                monthHtml += '<td></td>';
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const currentDate = new Date(monthData.year, monthData.month, day);
+                const dateKey = formatDateKey(currentDate);
+                
+                const isToday = today.getDate() === day && 
+                               today.getMonth() === monthData.month && 
+                               today.getFullYear() === monthData.year;
+                
+                const isSelected = (tempStartDate && formatDateKey(tempStartDate) === dateKey) ||
+                                  (tempEndDate && formatDateKey(tempEndDate) === dateKey);
+                
+                const isInRange = tempStartDate && tempEndDate && 
+                                 currentDate > tempStartDate && currentDate < tempEndDate;
+
+                let dayClass = 'calendar-day';
+                if (isToday) dayClass += ' today';
+                if (isSelected) dayClass += ' selected';
+                if (isInRange) dayClass += ' in-range';
+
+                monthHtml += `<td><div class="${dayClass}" data-date="${currentDate.toISOString()}">${day}</div></td>`;
+
+                if ((firstDay + day) % 7 === 0 && day < daysInMonth) {
+                    monthHtml += '</tr><tr>';
+                }
+            }
+
+            monthHtml += '</tr></tbody></table></div>';
+            html += monthHtml;
+        });
+
+        calendarsGrid.innerHTML = html;
+
+        document.querySelectorAll('.calendar-day').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const date = new Date(el.dataset.date);
+                handleDayClick(date);
+            });
+        });
+    }
+
+    const initialStartDate = new Date(2025, 5, 12);
+    const initialEndDate = new Date(2025, 5, 20);
+    startDate = initialStartDate;
+    endDate = initialEndDate;
+    tempStartDate = new Date(initialStartDate);
+    tempEndDate = new Date(initialEndDate);
+    updateDatesInput();
+
+    // ==================== ОСНОВНОЙ КОД ====================
+
+    let currentTours = [...tours];
+    const tourCardsDiv = document.getElementById('tourCards');
+    const resortDetails = document.getElementById('resortDetails');
+    const detailTitle = document.getElementById('detailTitle');
+    const attractionsList = document.getElementById('attractionsList');
+    const cafesList = document.getElementById('cafesList');
+    const reviewsModal = document.getElementById('reviewsModal');
+    const modalHotelName = document.getElementById('modalHotelName');
+    const reviewsList = document.getElementById('reviewsList');
+    const closeModal = document.getElementById('closeModal');
+    const tourCountSpan = document.getElementById('tourCount');
+
+    // Функция отображения карточек
+    function renderTours(toursArray) {
+        tourCardsDiv.innerHTML = '';
+        toursArray.forEach(tour => {
+            const ratingStars = '★'.repeat(Math.floor(tour.rating)) + '☆'.repeat(5 - Math.floor(tour.rating));
+            const hotelReviews = generateRandomReviews(tour.name);
+            const reviewCount = hotelReviews.length;
+            
+            const card = document.createElement('div');
+            card.className = 'tour-card';
+            card.innerHTML = `<div class="tour-img" style="background-image: ${tour.image ? `url('${tour.image}')` : 'linear-gradient(135deg, #003580, #1e4d8c)'}; background-size: cover; background-position: center;">
+    ${!tour.image ? '🏞️' : ''}
+</div>
+                <div class="tour-info">
+                    <h3>${tour.name}</h3>
+                    <div class="tour-location"><i class="fas fa-map-marker-alt"></i> ${tour.location}</div>
+                    <div class="tour-rating-row">
+                        <span class="stars">${ratingStars}</span>
+                        <span class="rating-value">${tour.rating}</span>
+                        <span class="review-count" data-hotel="${tour.name}">${reviewCount} отзывов</span>
+                    </div>
+                    <div class="tour-price">${tour.price.toLocaleString()} ₽ <small>за тур</small></div>
+                    <p class="tour-desc">${tour.description}</p>
+                    <div class="card-actions">
+                        <button class="details-btn" data-id="${tour.id}">Подробнее</button>
+                        <button class="reviews-btn" data-hotel="${tour.name}">📝 Отзывы</button>
+                    </div>
+                </div>
+            `;
+            tourCardsDiv.appendChild(card);
+        });
+
+        // Обработчики на кнопки
+        document.querySelectorAll('.details-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(e.target.dataset.id);
+                const tour = toursArray.find(t => t.id === id);
+                if (tour) {
+                    // Открываем страницу деталей в новой вкладке (если она есть)
+                    window.open(`tour-details.html?id=${id}`, '_blank');
+                }
+            });
+        });
+
+        document.querySelectorAll('.reviews-btn, .review-count').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const hotelName = e.target.dataset.hotel || e.target.closest('[data-hotel]')?.dataset.hotel;
+                if (hotelName) showReviews(hotelName);
+            });
+        });
+
+        tourCountSpan.textContent = toursArray.length;
+    }
+
+    // Показать отзывы в модалке
+    function showReviews(hotelName) {
+        modalHotelName.textContent = hotelName;
+        const reviews = generateRandomReviews(hotelName);
+        
+        reviewsList.innerHTML = reviews.map(r => `
+            <div class="review-item">
+                <div class="review-header">
+                    <span class="reviewer-name">${r.name}</span>
+                    <span class="review-date">${r.date}</span>
+                </div>
+                <div class="review-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                <div class="review-text">${r.text}</div>
+            </div>
+        `).join('');
+        
+        reviewsModal.classList.add('active');
+    }
+
+    // Показать детали курорта (встроенные)
+    function showResortDetails(tour) {
+        detailTitle.innerText = `${tour.name}, ${tour.city}`;
+        
+        const attractions = citiesAttractions[tour.city] || 
+            ['Кремль/Крепость', 'Музей истории', 'Собор', 'Парк', 'Набережная', 'Театр', 'Монастырь', 'Памятник', 'Выставочный зал', 'Природный парк'];
+        
+        attractionsList.innerHTML = attractions.slice(0, 10).map(a => 
+            `<li><i class="fas fa-check-circle" style="color:#003580;"></i> ${a}</li>`
+        ).join('');
+
+        const cafes = citiesCafes[tour.city] || defaultCafes;
+        cafesList.innerHTML = cafes.slice(0, 8).map(c => 
+            `<li><i class="fas fa-coffee"></i> ${c}</li>`
+        ).join('');
+
+        resortDetails.classList.add('active');
+        resortDetails.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Фильтрация
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        const to = document.getElementById('toCity').value.trim().toLowerCase();
+        const budget = document.getElementById('budget').value;
+
+        let filtered = tours;
+
+        if (to) {
+            filtered = filtered.filter(t => 
+                t.city.toLowerCase().includes(to) || t.location.toLowerCase().includes(to)
+            );
+        }
+
+        if (budget !== 'any') {
+            const [min, max] = budget.replace('+', '').split('-').map(Number);
+            filtered = filtered.filter(t => {
+                if (max) return t.price >= min && t.price <= max;
+                else return t.price >= min;
+            });
+        }
+
+        if (filtered.length === 0) {
+            alert('Ничего не найдено. Показаны все туры.');
+            filtered = tours;
+        }
+
+        currentTours = filtered;
+        renderTours(filtered);
+    });
+
+    // Сортировка
+    document.getElementById('sortTours').addEventListener('change', (e) => {
+        const sortBy = e.target.value;
+        let sorted = [...currentTours];
+
+        if (sortBy === 'rating') {
+            sorted.sort((a, b) => b.rating - a.rating);
+        } else if (sortBy === 'price-asc') {
+            sorted.sort((a, b) => a.price - b.price);
+        } else if (sortBy === 'price-desc') {
+            sorted.sort((a, b) => b.price - a.price);
+        }
+
+        renderTours(sorted);
+    });
+
+    // Закрытие модалки
+    closeModal.addEventListener('click', () => {
+        reviewsModal.classList.remove('active');
+    });
+
+    reviewsModal.addEventListener('click', (e) => {
+        if (e.target === reviewsModal) reviewsModal.classList.remove('active');
+    });
+
+    // Планировщик
+    const dayPlan = document.getElementById('dayPlan');
+    const addPlaceBtn = document.getElementById('addPlaceBtn');
+    const placeNameInput = document.getElementById('placeName');
+    const daySelect = document.getElementById('daySelect');
+
+    let placesByDay = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+
+    function renderDayPlan() {
+        dayPlan.innerHTML = '';
+        for (let day = 1; day <= 5; day++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day-item';
+            dayDiv.innerHTML = `
+                <div class="day-info">
+                    <span class="day-name">День ${day}</span>
+                    <div class="place-tags">
+                        ${placesByDay[day].map(place => 
+                            `<span class="place-tag">${place} <i class="fas fa-times remove-place" data-day="${day}" data-place="${place}"></i></span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            dayPlan.appendChild(dayDiv);
+        }
+
+        document.querySelectorAll('.remove-place').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const day = e.target.dataset.day;
+                const place = e.target.dataset.place;
+                placesByDay[day] = placesByDay[day].filter(p => p !== place);
+                renderDayPlan();
+            });
+        });
+    }
+
+    addPlaceBtn.addEventListener('click', () => {
+        const place = placeNameInput.value.trim();
+        const day = daySelect.value;
+        if (!place) {
+            alert('Введите название места');
+            return;
+        }
+        if (!placesByDay[day]) placesByDay[day] = [];
+        placesByDay[day].push(place);
+        renderDayPlan();
+        placeNameInput.value = '';
+    });
+
+    // Функция сброса фильтров и показа всех туров
+    function resetToAllTours() {
+        currentTours = [...tours];
+        renderTours(tours);
+        
+        document.getElementById('fromCity').value = 'Москва';
+        document.getElementById('toCity').value = 'Калининград';
+        document.getElementById('budget').value = 'any';
+        
+        const initialStartDate = new Date(2025, 5, 12);
+        const initialEndDate = new Date(2025, 5, 20);
+        startDate = initialStartDate;
+        endDate = initialEndDate;
+        tempStartDate = new Date(initialStartDate);
+        tempEndDate = new Date(initialEndDate);
+        updateDatesInput();
+        
+        document.querySelector('.results-header').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Клик по логотипу TravelPlanner
+    document.getElementById('logo').addEventListener('click', resetToAllTours);
+
+    // Инициализация
+    renderTours(tours);
+    renderDayPlan();
+
+    // Скролл к отзывам
+    document.querySelector('.reviews-link a').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelector('footer').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+</body>
+</html>
